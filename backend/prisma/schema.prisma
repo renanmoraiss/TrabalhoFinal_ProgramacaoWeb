@@ -1,13 +1,59 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id           String        @id @default(uuid())
+  username     String        @unique
+  email        String        @unique
+  passwordHash String
+  stickers     UserSticker[]
+  collections  Collection[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+model Player {
+  id        String   @id
+  name      String
+  team      String
+  photo     String?
+  position  String?
+  stickers  UserSticker[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model UserSticker {
+  id       String @id @default(uuid())
+  userId   String
+  playerId String
+  quantity Int    @default(1)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  collectionItems CollectionSticker[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([userId, playerId])
+}
+model Collection {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  userId      String
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       CollectionSticker[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([userId, name])
+}
+model CollectionSticker {
+  id            String @id @default(uuid())
+  collectionId  String
+  userStickerId String
+  collection    Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  userSticker   UserSticker @relation(fields: [userStickerId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  @@unique([collectionId, userStickerId])
 }
