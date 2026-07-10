@@ -6,7 +6,15 @@ import { hash } from "bcrypt";
 class CreateUserService{
     async execute({username, email, passwordHash}:CreateUserRequest){
         if(!username || !email || !passwordHash){
-            throw new Error("Informações necessárias faltando");
+            throw new Error("Os campos obrigatórios não podem estar vazios.");
+        }
+
+        if (username.length < 4) {
+            throw new Error("O usuário deve ter no mínimo 4 caracteres")
+        }
+
+        if(passwordHash.length < 4) {
+            throw new Error("A senha deve ter no mínimo 4 caracteres")
         }
 
         const userExiste = await prismaClient.user.findFirst({
