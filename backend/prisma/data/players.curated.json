@@ -1,0 +1,142 @@
+[
+  {
+    "id": "44843",
+    "name": "M. Boyle",
+    "team": "Australia",
+    "photo": "https://media.api-sports.io/football/players/44843.png",
+    "position": "Attacker"
+  },
+  {
+    "id": "36920",
+    "name": "Y. Nakayama",
+    "team": "Japan",
+    "photo": "https://media.api-sports.io/football/players/36920.png",
+    "position": "Defender"
+  },
+  {
+    "id": "412",
+    "name": "A. Harit",
+    "team": "Morocco",
+    "photo": "https://media.api-sports.io/football/players/412.png",
+    "position": "Midfielder"
+  },
+  {
+    "id": "7",
+    "name": "A. Diallo",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/7.png",
+    "position": "Defender"
+  },
+  {
+    "id": "2985",
+    "name": "A. Gomis",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/2985.png",
+    "position": "Goalkeeper"
+  },
+  {
+    "id": "22015",
+    "name": "B. Dia",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/22015.png",
+    "position": "Attacker"
+  },
+  {
+    "id": "2991",
+    "name": "C. Kouyaté",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/2991.png",
+    "position": "Midfielder"
+  },
+  {
+    "id": "2986",
+    "name": "É. Mendy",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/2986.png",
+    "position": "Goalkeeper"
+  },
+  {
+    "id": "105",
+    "name": "F. Ballo-Touré",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/105.png",
+    "position": "Defender"
+  },
+  {
+    "id": "162236",
+    "name": "F. Mendy",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/162236.png",
+    "position": "Defender"
+  },
+  {
+    "id": "2990",
+    "name": "I. Gueye",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/2990.png",
+    "position": "Midfielder"
+  },
+  {
+    "id": "2218",
+    "name": "I. Sarr",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/2218.png",
+    "position": "Midfielder"
+  },
+  {
+    "id": "81",
+    "name": "K. Diatta",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/81.png",
+    "position": "Midfielder"
+  },
+  {
+    "id": "318",
+    "name": "K. Koulibaly",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/318.png",
+    "position": "Defender"
+  },
+  {
+    "id": "175415",
+    "name": "M. N&apos;Diaye",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/175415.png",
+    "position": "Defender"
+  },
+  {
+    "id": "18785",
+    "name": "N. Mendy",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/18785.png",
+    "position": "Midfielder"
+  },
+  {
+    "id": "1592",
+    "name": "P. Cissé",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/1592.png",
+    "position": "Defender"
+  },
+  {
+    "id": "45021",
+    "name": "S. Dieng",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/45021.png",
+    "position": "Goalkeeper"
+  },
+  {
+    "id": "1264",
+    "name": "Y. Sabaly",
+    "team": "Senegal",
+    "photo": "https://media.api-sports.io/football/players/1264.png",
+    "position": "Defender"
+  },
+  {
+    "id": "101814",
+    "name": "R. Araújo",
+    "team": "Uruguay",
+    "photo": "https://media.api-sports.io/football/players/101814.png",
+    "position": "Defender"
+  }
+]
