@@ -1,4 +1,3 @@
-// src/pages/Cadastro.tsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginSchema } from "../Schemas/Login.schema";
@@ -6,7 +5,7 @@ import { api } from "../Services/api";
 import styles from "./Login.module.css"
 
 export function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [passwordHash, setPasswordHash] = useState("");
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
@@ -17,7 +16,7 @@ export function Login() {
     event.preventDefault();
     setErro("");
 
-    const resultado = loginSchema.safeParse({ email, passwordHash });
+    const resultado = loginSchema.safeParse({ username, passwordHash });
 
     if (!resultado.success) {
       const primeiroErro = resultado.error.issues[0].message;
@@ -35,7 +34,7 @@ export function Login() {
       }, 3000);
     } catch (error) {
       console.error(error);
-      setErro("Erro ao Logar. Tente novamente.");
+      setErro("Erro ao Logar. Verifique seu usuário e senha.");
     }
   }
 
@@ -49,8 +48,8 @@ export function Login() {
       <div className={styles.container}>
         <form onSubmit={handleSubmit} className={styles.formulario}>
           <div className={styles.campo}>
-            <label>Email</label>
-            <input className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} />
+            <label>Usuário</label>
+            <input className={styles.input} value={username} onChange={(e) => setUsername(e.target.value)} />
           </div>
 
           <div className={styles.campo}>

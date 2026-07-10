@@ -4,31 +4,36 @@ import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 
 class AuthService {
-    async execute({email, passwordHash}: AuthRequest) {
-        if(!email || !passwordHash) {
+    async execute({username, passwordHash}: AuthRequest) {
+        if(!username || !passwordHash) {
             throw new Error ("Campos obrigatórios não podem estar vazios.")
+        }
+
+        if (passwordHash.length < 4) {
+            throw new Error("A senha deve ter no mínimo 4 caracteres")
         }
 
         const user = await prismaClient.user.findUnique({
             where: {
-                email: email
+                username: username
             }
         });
 
         if(!user) {
-            throw new Error ("Email ou senha estão incorretos!");
+            throw new Error ("Usuário ou senha estão incorretos!");
         }
 
         const senhaHash = await compare(passwordHash, user?.passwordHash);
 
         if(!senhaHash) {
-            throw new Error ("Email ou senha estão incorretos!");
+            throw new Error ("Usuário ou senha estão incorretos!");
         }
 
 
         const token = sign(
             {
-                email: user?.email
+                username: user.username,
+                email: user.email,
             },
             process.env.JWT_SECRET as string,
             {
@@ -39,6 +44,7 @@ class AuthService {
 
         return {
             id: user?.id,
+            username: user.username,
             email: user?.email,
             token
         }

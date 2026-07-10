@@ -4,9 +4,9 @@ import { AuthRequest } from "../../models/auth/AuthRequest";
 
 class AuthController {
     async handle (request: Request, response: Response) {
-        const { email, passwordHash } : AuthRequest = request.body;
+        const { username, passwordHash } : AuthRequest = request.body;
         const authService = new AuthService();
-        const auth = await authService.execute({email, passwordHash});
+        const auth = await authService.execute({username, passwordHash});
         return response.status(200).json(auth);
     }
 }
