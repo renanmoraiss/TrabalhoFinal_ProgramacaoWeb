@@ -40,7 +40,6 @@ model UserSticker {
 model Collection {
   id          String   @id @default(uuid())
   name        String
-  description String?
   userId      String
   user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   items       CollectionSticker[]
