@@ -4,8 +4,8 @@ import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 
 class AuthService {
-    async execute({email, senha}: AuthRequest) {
-        if(!email || !senha) {
+    async execute({email, passwordHash}: AuthRequest) {
+        if(!email || !passwordHash) {
             throw new Error ("Campos obrigatórios não podem estar vazios.")
         }
 
@@ -19,7 +19,7 @@ class AuthService {
             throw new Error ("Email ou senha estão incorretos!");
         }
 
-        const senhaHash = await compare(senha, user?.passwordHash);
+        const senhaHash = await compare(passwordHash, user?.passwordHash);
 
         if(!senhaHash) {
             throw new Error ("Email ou senha estão incorretos!");
