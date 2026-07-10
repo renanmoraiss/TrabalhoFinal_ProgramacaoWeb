@@ -21,7 +21,7 @@ export function isAuthenticated (
        
         return next();
     } catch (error) {
-        return response.send(401).end();
+        return response.status(401).end();
     }
 
 }
