@@ -15,7 +15,7 @@ class AuthService {
 
         const user = await prismaClient.user.findUnique({
             where: {
-                username: username
+                username: username.trim()
             }
         });
 

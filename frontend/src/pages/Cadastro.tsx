@@ -1,4 +1,3 @@
-// src/pages/Cadastro.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { cadastroSchema } from "../Schemas/Cadastro.schema";
@@ -9,6 +8,7 @@ export function Cadastro() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [passwordHash, setPasswordHash] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
 
@@ -18,7 +18,7 @@ export function Cadastro() {
     event.preventDefault();
     setErro("");
 
-    const resultado = cadastroSchema.safeParse({ username, email, passwordHash });
+    const resultado = cadastroSchema.safeParse({ username, email, passwordHash, confirmPassword });
 
     if (!resultado.success) {
       const primeiroErro = resultado.error.issues[0].message;
@@ -27,12 +27,16 @@ export function Cadastro() {
     }
 
     try {
-        await api.post("/user/create", resultado.data);
+        await api.post("/user/create", {
+          username: resultado.data.username,
+          email: resultado.data.email,
+          passwordHash: resultado.data.passwordHash,
+        });
         setSucesso("Usuário cadastrado com sucesso!");
   
         setTimeout(() => {
             navigate("/login");
-        }, 3000);
+        }, 1000);
     } catch (error) {
   console.error(error);
   setErro("Erro ao cadastrar. Tente novamente.");
@@ -49,7 +53,7 @@ export function Cadastro() {
       <div className={styles.container}>
         <form onSubmit={handleSubmit} className={styles.formulario}>
           <div className={styles.campo}>
-            <label className={styles.nome}>Nome</label>
+            <label className={styles.nome}>Usuário</label>
             <input className={styles.input} value={username} onChange={(e) => setUsername(e.target.value)} />
           </div>
 
@@ -64,6 +68,15 @@ export function Cadastro() {
               type="password"
               value={passwordHash}
               onChange={(e) => setPasswordHash(e.target.value)}
+            />
+          </div>
+
+          <div className={styles.campo}>
+            <label>Confirmação de Senha</label>
+            <input className={styles.input}
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
 

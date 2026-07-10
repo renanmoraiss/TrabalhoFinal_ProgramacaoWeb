@@ -29,9 +29,7 @@ export function Login() {
       localStorage.setItem("token", resposta.data.token)
 
       setSucesso("Usuário Logado com sucesso!");
-      setTimeout(() => {
-        navigate("/home");
-      }, 3000);
+      navigate("/home");
     } catch (error) {
       console.error(error);
       setErro("Erro ao Logar. Verifique seu usuário e senha.");
