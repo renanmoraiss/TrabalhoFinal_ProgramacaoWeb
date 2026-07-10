@@ -10,6 +10,8 @@ import { GetCollectionController } from "./Controller/Collection/GetCollectionCo
 import { UpdateCollectionController } from "./Controller/Collection/UpdateCollectionController";
 import { ListCollectionController } from "./Controller/Collection/ListCollectionController";
 import { DeleteCollectionController } from "./Controller/Collection/DeleteCollectionController";
+import { AddStickerToCollectionController } from "./Controller/Collection/AddStickerToCollectionController";
+import { RemoveStickerFromCollectionController } from "./Controller/Collection/RemoveStickerFromCollectionController";
 
 const router = Router();
 
@@ -24,5 +26,7 @@ router.get("/collections", isAuthenticated, new ListCollectionController().handl
 router.get("/collections/:id", isAuthenticated, new GetCollectionController().handle);
 router.put("/collections/:id", isAuthenticated, new UpdateCollectionController().handle);
 router.delete("/collections/:id", isAuthenticated, new DeleteCollectionController().handle);
+router.post("/collections/:id/stickers", isAuthenticated, new AddStickerToCollectionController().handle);
+router.delete("/collections/:id/stickers/:userStickerId", isAuthenticated, new RemoveStickerFromCollectionController().handle);
 
 export {router};
