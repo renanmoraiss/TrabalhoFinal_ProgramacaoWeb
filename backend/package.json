@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "fetch:players:test": "tsx src/scripts/fetchPlayers.ts --test",
+    "fetch:players": "tsx src/scripts/fetchPlayers.ts"
   },
   "keywords": [],
   "author": "",

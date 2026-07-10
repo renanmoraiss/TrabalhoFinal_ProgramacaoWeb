@@ -13,3 +13,6 @@ prisma/dev.db-journal
 *.db-journal
 
 /generated/prisma
+# JSONs brutos baixados da API-Football (intermediários, regeneráveis).
+# O players.curated.json é versionado.
+prisma/data/raw/
