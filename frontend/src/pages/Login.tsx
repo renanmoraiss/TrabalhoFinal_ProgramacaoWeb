@@ -17,7 +17,7 @@ export function Login() {
     event.preventDefault();
     setErro("");
 
-    const resultado = loginSchema.safeParse({email, passwordHash });
+    const resultado = loginSchema.safeParse({ email, passwordHash });
 
     if (!resultado.success) {
       const primeiroErro = resultado.error.issues[0].message;
@@ -26,16 +26,17 @@ export function Login() {
     }
 
     try {
-        await api.post("/user/session", resultado.data);
-        setSucesso("Usuário Logado com sucesso!");
-  
-        setTimeout(() => {
-            navigate("/home");
-        }, 3000);
+      const resposta = await api.post("/user/session", resultado.data);
+      localStorage.setItem("token", resposta.data.token)
+
+      setSucesso("Usuário Logado com sucesso!");
+      setTimeout(() => {
+        navigate("/home");
+      }, 3000);
     } catch (error) {
-  console.error(error);
-  setErro("Erro ao Logar. Tente novamente.");
-}
+      console.error(error);
+      setErro("Erro ao Logar. Tente novamente.");
+    }
   }
 
   return (
@@ -61,11 +62,11 @@ export function Login() {
             />
           </div>
 
-            {erro && <p className={styles.erro}>{erro}</p>}
-            {sucesso && <p className={styles.sucesso}>{sucesso}</p>}
+          {erro && <p className={styles.erro}>{erro}</p>}
+          {sucesso && <p className={styles.sucesso}>{sucesso}</p>}
 
 
-          <button className= {styles.botao} type="submit">Logar</button>
+          <button className={styles.botao} type="submit">Logar</button>
         </form>
         <Link to="/cadastro" className={styles.link}>Ainda não tem conta ? Clique aqui</Link>
       </div>
