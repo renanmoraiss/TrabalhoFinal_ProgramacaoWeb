@@ -1,26 +1,29 @@
 import fs from "fs";
 import path from "path";
 
-// * Restrições da cota gratuita da API-Football: - 100 requisições por dia - 10 requisições por minuto
-// por isso download é feito com pausa entre paginas e cada pagina é salva assim que chega. aqui iremos baixar as páginas de jogadores da API
-// e salvar o JSON BRUTO em backend/prisma/data/raw/
+/**
+ * integração com a API-Football (api-sports.io). baixa e salva em json
+ *
+ * Plano gratuito: 100 req/dia, 10 req/min, season só 2022–2024, e no endpoint
+ * de players só as páginas 1..3. Por isso: throttle (pausa), tolerância a falha por
+ * página, e cap de páginas.
+ */
 
 const BASE_URL = "https://v3.football.api-sports.io/players";
+const TEAMS_URL = "https://v3.football.api-sports.io/teams";
 
-const DEFAULT_LEAGUE = 1; // 1 = World Cup na API-Football
-const DEFAULT_SEASON = 2022;
+const DEFAULT_LEAGUE = 1; // 1 = World Cup
+const DEFAULT_SEASON = 2022; // plano grátis não libera 2026; 2022 = Copa do Catar
+const DEFAULT_THROTTLE_MS = 7000; // ~7s => respeita 10 req/min
 
-// 10 req/min = no mínimo 7s entre chamadas.
-const DEFAULT_THROTTLE_MS = 7000;
+const FREE_PLAN_MAX_PAGE = 3;
 
-// Diretório de saída
 const RAW_DIR = path.resolve(__dirname, "../../prisma/data/raw");
 
 export interface FetchOptions {
   league?: number;
   season?: number;
   throttleMs?: number;
-  /** limite de pag pra testes sem gastar muita cota*/
   maxPages?: number;
 }
 
@@ -50,56 +53,44 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * baixa uma página da API e devolve o corpo JSON já parseado.
- * lança erro se a api ou o http falhar
- */
-async function fetchPage(
-  page: number,
-  league: number,
-  season: number,
-): Promise<any> {
-  const apiKey = getApiKey();
-  const url = `${BASE_URL}?league=${league}&season=${season}&page=${page}`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "x-apisports-key": apiKey,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status} ${response.statusText}`);
-  }
-
-  const body = await response.json();
-
+/** a API-Football responde 200 com um campo `errors` preenchido em falhas. */
+function assertNoApiErrors(body: any): void {
   const errors = body?.errors;
   const hasErrors =
     errors &&
     ((Array.isArray(errors) && errors.length > 0) ||
       (!Array.isArray(errors) && Object.keys(errors).length > 0));
-
   if (hasErrors) {
     throw new Error(`API retornou erros: ${JSON.stringify(errors)}`);
   }
-
-  return body;
 }
 
-function savePage(page: number, body: any): string {
+/** Salva um corpo JSON bruto com um nome de arquivo dado (sem extensão). */
+function saveRaw(baseName: string, body: any): string {
   ensureRawDir();
-  const file = path.join(RAW_DIR, `players_page_${page}.json`);
+  const file = path.join(RAW_DIR, `${baseName}.json`);
   fs.writeFileSync(file, JSON.stringify(body, null, 2), "utf-8");
   return file;
 }
 
+/** Baixa uma página do endpoint /players (por liga). */
+async function fetchPage(page: number, league: number, season: number): Promise<any> {
+  const apiKey = getApiKey();
+  const url = `${BASE_URL}?league=${league}&season=${season}&page=${page}`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: { "x-apisports-key": apiKey },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} ${response.statusText}`);
+  }
+  const body = await response.json();
+  assertNoApiErrors(body);
+  return body;
+}
+
 /**
- * teste de 1 requisição.
- * baixa apenas a página 1 e salva. serve pra inspecionar a estrutura real da
- * resposta (confirmar onde está a seleção, a foto, etc.) gastando só 1
- * requisição da cota antes de qualquer download completo.
+ * TESTE DE 1 REQUISIÇÃO. Baixa só a página 1 (por liga) pra inspecionar.
  */
 export async function fetchTestPage(
   options: FetchOptions = {},
@@ -107,12 +98,10 @@ export async function fetchTestPage(
   const league = options.league ?? DEFAULT_LEAGUE;
   const season = options.season ?? DEFAULT_SEASON;
 
-  console.log(
-    `[apiFootball] TESTE: baixando página 1 (league=${league}, season=${season})...`,
-  );
+  console.log(`[apiFootball] TESTE: baixando página 1 (league=${league}, season=${season})...`);
 
   const body = await fetchPage(1, league, season);
-  const file = savePage(1, body);
+  const file = saveRaw("players_page_1", body);
 
   const response = body?.response ?? [];
   console.log(`[apiFootball] TESTE ok. Salvo em: ${file}`);
@@ -128,66 +117,45 @@ export async function fetchTestPage(
 }
 
 /**
- * DOWNLOAD COMPLETO (paginado).
- * Baixa a página 1, descobre o total de páginas em `paging.total` e itera até
- * o fim, com throttle entre as chamadas. Cada página é salva assim que chega.
- * Falha em uma página é tolerada (loga e continua).
+ * DOWNLOAD por LIGA (paginado). Cap de páginas pelo plano gratuito.
  */
-export async function fetchAllPlayers(
-  options: FetchOptions = {},
-): Promise<PageResult[]> {
+export async function fetchAllPlayers(options: FetchOptions = {}): Promise<PageResult[]> {
   const league = options.league ?? DEFAULT_LEAGUE;
   const season = options.season ?? DEFAULT_SEASON;
   const throttleMs = options.throttleMs ?? DEFAULT_THROTTLE_MS;
 
   const results: PageResult[] = [];
+  console.log(`[apiFootball] Iniciando download (league=${league}, season=${season}, throttle=${throttleMs}ms)`);
 
-  console.log(
-    `[apiFootball] Iniciando download (league=${league}, season=${season}, throttle=${throttleMs}ms)`,
-  );
-
-  // Página 1: precisamos dela pra descobrir o total de páginas.
   let totalPages: number;
   try {
     const firstBody = await fetchPage(1, league, season);
-    const file = savePage(1, firstBody);
+    const file = saveRaw("players_page_1", firstBody);
     totalPages = firstBody?.paging?.total ?? 1;
-    results.push({
-      page: 1,
-      ok: true,
-      file,
-      playersInPage: (firstBody?.response ?? []).length,
-    });
-    console.log(
-      `[apiFootball] Página 1/${totalPages} salva (${(firstBody?.response ?? []).length} jogadores).`,
-    );
+    results.push({ page: 1, ok: true, file, playersInPage: (firstBody?.response ?? []).length });
+    console.log(`[apiFootball] Página 1/${totalPages} salva (${(firstBody?.response ?? []).length} jogadores).`);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error(
-      `[apiFootball] Falha na página 1 (não foi possível descobrir o total): ${message}`,
-    );
+    console.error(`[apiFootball] Falha na página 1 (não foi possível descobrir o total): ${message}`);
     results.push({ page: 1, ok: false, error: message });
     return results;
   }
 
-  if (options.maxPages && options.maxPages < totalPages) {
-    totalPages = options.maxPages;
-    console.log(`[apiFootball] Limitado a ${totalPages} páginas (maxPages).`);
+  const maxPages = options.maxPages ?? FREE_PLAN_MAX_PAGE;
+  if (maxPages < totalPages) {
+    totalPages = maxPages;
+    console.log(`[apiFootball] Limitado a ${totalPages} páginas (plano gratuito).`);
   }
 
   for (let page = 2; page <= totalPages; page++) {
-    await sleep(throttleMs); // respeita o limite de 10 req/min
-
+    await sleep(throttleMs);
     try {
       const body = await fetchPage(page, league, season);
-      const file = savePage(page, body);
+      const file = saveRaw(`players_page_${page}`, body);
       const count = (body?.response ?? []).length;
       results.push({ page, ok: true, file, playersInPage: count });
-      console.log(
-        `[apiFootball] Página ${page}/${totalPages} salva (${count} jogadores).`,
-      );
+      console.log(`[apiFootball] Página ${page}/${totalPages} salva (${count} jogadores).`);
     } catch (error) {
-      // Tolerância a falha: loga e continua, sem perder o já baixado.
       const message = error instanceof Error ? error.message : String(error);
       console.error(`[apiFootball] Falha na página ${page}: ${message}`);
       results.push({ page, ok: false, error: message });
@@ -196,11 +164,87 @@ export async function fetchAllPlayers(
 
   const ok = results.filter((r) => r.ok).length;
   const fail = results.filter((r) => !r.ok).length;
-  console.log(
-    `[apiFootball] Concluído. Páginas OK: ${ok}, com falha: ${fail}. Brutos em: ${RAW_DIR}`,
-  );
-
+  console.log(`[apiFootball] Concluído. Páginas OK: ${ok}, com falha: ${fail}. Brutos em: ${RAW_DIR}`);
   return results;
+}
+
+/**
+ * Descobre as seleções de uma liga/temporada (endpoint /teams). 1 requisição.
+ * Usado pra pegar os ids reais das seleções sem chutar.
+ */
+export async function fetchTeams(
+  league: number = DEFAULT_LEAGUE,
+  season: number = DEFAULT_SEASON,
+): Promise<{ id: number; name: string }[]> {
+  const apiKey = getApiKey();
+  const url = `${TEAMS_URL}?league=${league}&season=${season}`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: { "x-apisports-key": apiKey },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} ${response.statusText}`);
+  }
+  const body = await response.json();
+  assertNoApiErrors(body);
+  saveRaw("teams", body);
+
+  return (body?.response ?? []).map((r: any) => ({
+    id: r?.team?.id,
+    name: r?.team?.name,
+  }));
+}
+
+/**
+ * Baixa o elenco de UMA seleção (endpoint /players?team=...), paginando até o
+ * fim (respeitando o cap de 3 páginas). Salva players_team{id}_page{n}.json.
+ * Tolerante a falha por página.
+ */
+export async function fetchSquad(
+  teamId: number,
+  teamName: string,
+  season: number = DEFAULT_SEASON,
+  throttleMs: number = DEFAULT_THROTTLE_MS,
+): Promise<void> {
+  const apiKey = getApiKey();
+
+  const fetchTeamPage = async (page: number): Promise<any> => {
+    const url = `${BASE_URL}?team=${teamId}&season=${season}&page=${page}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "x-apisports-key": apiKey },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} ${response.statusText}`);
+    }
+    const body = await response.json();
+    assertNoApiErrors(body);
+    return body;
+  };
+
+  await sleep(throttleMs);
+
+  let totalPages = 1;
+  try {
+    const first = await fetchTeamPage(1);
+    saveRaw(`players_team${teamId}_page1`, first);
+    totalPages = Math.min(first?.paging?.total ?? 1, FREE_PLAN_MAX_PAGE);
+    console.log(`[squad] ${teamName}: página 1/${totalPages} (${(first?.response ?? []).length} jogadores).`);
+  } catch (error) {
+    console.error(`[squad] ${teamName}: falha na página 1: ${error instanceof Error ? error.message : error}`);
+    return;
+  }
+
+  for (let page = 2; page <= totalPages; page++) {
+    await sleep(throttleMs);
+    try {
+      const body = await fetchTeamPage(page);
+      saveRaw(`players_team${teamId}_page${page}`, body);
+      console.log(`[squad] ${teamName}: página ${page}/${totalPages} (${(body?.response ?? []).length} jogadores).`);
+    } catch (error) {
+      console.error(`[squad] ${teamName}: falha na página ${page}: ${error instanceof Error ? error.message : error}`);
+    }
+  }
 }
 
 export { RAW_DIR };

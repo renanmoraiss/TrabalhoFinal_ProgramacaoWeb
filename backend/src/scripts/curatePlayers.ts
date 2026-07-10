@@ -4,19 +4,9 @@ import path from "path";
 /**
  * Etapa 2 - Curadoria.
  *
- * Lê TODOS os JSONs brutos em backend/prisma/data/raw/ (gerados pela etapa 1),
- * aplica as regras de limpeza e produz um único arquivo limpo:
+ * Lê TODOS os JSONs brutos em backend/prisma/data/raw/ (gerados pela integracao com a api),
+ * aplica as regras de limpeza (nao incluir jogador sem foto etc) e produz um único arquivo limpo:
  *   backend/prisma/data/players.curated.json
- *
- * Regras:
- *   - descarta jogador sem foto;
- *   - descarta jogador sem seleção resolvível (statistics[0].team.name);
- *   - deduplica por id (id da API-Football);
- *   - mapeia para o formato do model Player.
- *
- * Não escreve no banco (isso é a etapa 3, o seed). O players.curated.json
- * é versionado no git, então o professor/colegas populam o banco sem precisar
- * de chave nem gastar cota da API.
  */
 
 const RAW_DIR = path.resolve(__dirname, "../../prisma/data/raw");
@@ -41,7 +31,7 @@ function readRawEntries(): any[] {
 
   const files = fs
     .readdirSync(RAW_DIR)
-    .filter((f) => f.startsWith("players_page_") && f.endsWith(".json"))
+    .filter((f) => f.startsWith("players") && f.endsWith(".json"))
     // ordena por número da página só pra o log ficar organizado
     .sort((a, b) => {
       const na = Number(a.replace(/\D/g, ""));

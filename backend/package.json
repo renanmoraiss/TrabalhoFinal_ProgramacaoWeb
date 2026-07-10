@@ -10,6 +10,7 @@
     "start": "node dist/server.js",
     "fetch:players:test": "tsx src/scripts/fetchPlayers.ts --test",
     "fetch:players": "tsx src/scripts/fetchPlayers.ts",
+    "fetch:squads": "tsx src/scripts/fetchSquads.ts",
     "curate:players": "tsx src/scripts/curatePlayers.ts",
     "seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate"
