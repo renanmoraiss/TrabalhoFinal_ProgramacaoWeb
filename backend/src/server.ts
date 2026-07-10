@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { router } from "./routes";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use(router)
 
 app.get("/health", (req, res) => {
   return res.json({ message: "Backend funcionando" });
