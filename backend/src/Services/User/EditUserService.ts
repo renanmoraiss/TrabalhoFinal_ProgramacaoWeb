@@ -14,6 +14,10 @@ class EditUserService{
                 username: username,
                 email: email
             },
+            select: {
+                username: true,
+                email: true
+            }
         });
         return (edit);
     }
