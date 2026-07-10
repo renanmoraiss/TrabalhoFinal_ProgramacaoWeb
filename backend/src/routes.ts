@@ -2,7 +2,7 @@ import { Router } from "express";
 import { CreateUserController } from "./Controller/User/CreateUserController";
 import { AuthController } from "./Controller/Auth/AuthController";
 import { EditUserController } from "./Controller/User/EditUserController";
-import { isAuthenticated } from "./middleware/MeddlewareAuth";
+import { isAuthenticated } from "./middleware/MiddlewareAuth";
 import { ListUserController } from "./Controller/User/ListUserController";
 import { DeleteUserController } from "./Controller/User/DeleteUserController";
 

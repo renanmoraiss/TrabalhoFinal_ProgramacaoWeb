@@ -1,5 +1,5 @@
 import {prismaClient} from "../../prisma/client";
-import { AuthRequest } from "../../models/atuh/AuthRequest";
+import { AuthRequest } from "../../models/auth/AuthRequest";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 

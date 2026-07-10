@@ -1,5 +1,5 @@
 import {prismaClient} from "../../prisma/client"
-import { CreateUserRequest } from "../../models/user/CreaeteuserRequest"
+import { CreateUserRequest } from "../../models/user/CreateUserRequest"
 import { hash } from "bcrypt";
 
 

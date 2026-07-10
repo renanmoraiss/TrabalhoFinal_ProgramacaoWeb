@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { EditUserService } from "../../Services/User/EditUserService";
+import { EditUserService } from "../../services/User/EditUserService";
 import { EditUserRequest } from "../../models/user/EditUserRequest";
 
 
