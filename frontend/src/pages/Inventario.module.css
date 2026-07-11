@@ -1,0 +1,61 @@
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+.topo h1 {
+  margin: 0;
+  color: #002776;
+}
+.stats {
+  margin: 0.3rem 0 0;
+  color: #555;
+}
+.stats strong {
+  color: #009c3b;
+}
+.select {
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background: #fff;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.vazio {
+  text-align: center;
+  min-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #555;
+}
+.vazio h1 {
+  margin: 0.3rem 0 0;
+  color: #002776;
+}
+.icone {
+  font-size: 4rem;
+}
+.botao {
+  margin-top: 1rem;
+  background: linear-gradient(90deg, #009c3b, #007a2e);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 12px;
+  padding: 0.8rem 1.8rem;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(0, 156, 59, 0.35);
+}
+.botao:hover {
+  filter: brightness(1.05);
+}
