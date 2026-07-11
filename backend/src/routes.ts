@@ -14,6 +14,8 @@ import { AddStickerToCollectionController } from "./Controller/Collection/AddSti
 import { RemoveStickerFromCollectionController } from "./Controller/Collection/RemoveStickerFromCollectionController";
 import { ListUserStickersController } from "./Controller/Sticker/ListUserStickersController";
 import { GetBrasilAlbumController } from "./Controller/Album/GetBrasilAlbumController";
+import { ListPlayersController } from "./Controller/Player/ListPlayersController";
+import { OpenPackController } from "./Controller/Pack/OpenPackController";
 
 const router = Router();
 
@@ -32,5 +34,7 @@ router.post("/collections/:id/stickers", isAuthenticated, new AddStickerToCollec
 router.delete("/collections/:id/stickers/:userStickerId", isAuthenticated, new RemoveStickerFromCollectionController().handle);
 router.get("/stickers/me", isAuthenticated, new ListUserStickersController().handle);
 router.get("/album/brasil", isAuthenticated, new GetBrasilAlbumController().handle);
+router.get("/players", new ListPlayersController().handle);
+router.post("/packs/open", isAuthenticated, new OpenPackController().handle);
 
 export {router};
