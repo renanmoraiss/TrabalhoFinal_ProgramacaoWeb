@@ -92,16 +92,18 @@ body {
 
 .sucesso {
   color: green;
-  font-size: 30px;
+  font-size: 26px;
 }
 
 .link {
+  font-size: 26px;
+  text-align: center;
+  margin-top: 12px;
   color: #2e7d32;
-  text-decoration: none;
-  font-size: 30px;
-  margin-top: 8px;
 }
 
-.link:hover {
-  text-decoration: underline;
+.link a {
+  font-weight: 600;
+  text-decoration: none;
+  color: #2e7d32;
 }

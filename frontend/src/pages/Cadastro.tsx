@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { cadastroSchema } from "../Schemas/Cadastro.schema";
 import { api } from "../Services/api";
 import styles from "./Cadastro.module.css";
@@ -85,6 +85,9 @@ export function Cadastro() {
 
 
           <button className= {styles.botao} type="submit">Cadastrar</button>
+          <p className={styles.linkLogin}>
+            Já tem uma conta? <Link to="/login">Entrar</Link>
+          </p>
         </form>
       </div>
     </div>

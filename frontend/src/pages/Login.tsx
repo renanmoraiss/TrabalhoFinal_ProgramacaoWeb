@@ -64,8 +64,10 @@ export function Login() {
 
 
           <button className={styles.botao} type="submit">Logar</button>
+          <p className={styles.link}>
+            Não tem conta? <Link to="/cadastro">Criar</Link>
+          </p>
         </form>
-        <Link to="/cadastro" className={styles.link}>Ainda não tem conta ? Clique aqui</Link>
       </div>
     </div>
   );
