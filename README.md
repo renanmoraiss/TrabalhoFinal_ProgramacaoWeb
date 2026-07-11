@@ -6,13 +6,13 @@ O **Copa Álbum — O Sonho do Hexa** é um projeto inspirado em álbuns de figu
 
 A proposta do projeto é simular um álbum de figurinhas, permitindo que cada usuário tenha seu próprio inventário e organize suas figurinhas em coleções temáticas, como favoritos, jogadores de uma determinada posição (como atacantes, zagueiros...), entre outras possibilidades.
 
-Principais funcionalidades da aplicação estão:
+As principais funcionalidades da aplicação são:
 
 - Cadastro e login de usuários;
-- Campos 'E-mail' e 'Usuário' são únicos no cadastro;
+- Campos `E-mail` e `Usuário` são únicos no cadastro;
+- Validação de cadastro e login;
 - Autenticação com JWT;
 - Rotas privadas para usuários autenticados;
-- Validação de cadastro e login;
 - Abertura de pacotes de figurinhas;
 - Listagem do inventário do usuário;
 - Visualização do álbum da Seleção Brasileira;
@@ -55,6 +55,8 @@ Principais funcionalidades da aplicação estão:
 
 ## Integrantes
 
-Renan Morais | [@renanmoraiss](https://github.com/renanmoraiss)
-João Pedro Sabino | [@sabjoao](https://github.com/sabjoao)
-Matheus Dourado | [@mvtheusdourado](https://github.com/mvtheusdourado)
+| Nome | GitHub |
+|---|---|
+| Renan Morais | [@renanmoraiss](https://github.com/renanmoraiss) |
+| João Pedro Sabino | [@sabjoao](https://github.com/sabjoao) |
+| Matheus Dourado | [@mvtheusdourado](https://github.com/mvtheusdourado) |
