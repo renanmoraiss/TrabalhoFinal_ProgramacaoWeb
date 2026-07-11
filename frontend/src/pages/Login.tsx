@@ -1,0 +1,74 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { loginSchema } from "../Schemas/Login.schema";
+import { api } from "../Services/api";
+import styles from "./Login.module.css"
+
+export function Login() {
+  const [username, setUsername] = useState("");
+  const [passwordHash, setPasswordHash] = useState("");
+  const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
+
+  const navigate = useNavigate();
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    setErro("");
+
+    const resultado = loginSchema.safeParse({ username, passwordHash });
+
+    if (!resultado.success) {
+      const primeiroErro = resultado.error.issues[0].message;
+      setErro(primeiroErro);
+      return;
+    }
+
+    try {
+      const resposta = await api.post("/user/session", resultado.data);
+      localStorage.setItem("token", resposta.data.token)
+
+      setSucesso("Usuário Logado com sucesso!");
+      navigate("/home");
+    } catch (error) {
+      console.error(error);
+      setErro("Erro ao Logar. Verifique seu usuário e senha.");
+    }
+  }
+
+  return (
+    <div className={styles.pagina}>
+      <header className={styles.header}>
+        <img src="/Logo.jpg" alt="Logo do projeto" className={styles.logo} />
+        <p className={styles.tituloProjeto}>Copa Álbum - O Sonho do Hexa</p>
+      </header>
+
+      <div className={styles.container}>
+        <form onSubmit={handleSubmit} className={styles.formulario}>
+          <div className={styles.campo}>
+            <label>Usuário</label>
+            <input className={styles.input} value={username} onChange={(e) => setUsername(e.target.value)} />
+          </div>
+
+          <div className={styles.campo}>
+            <label>Senha</label>
+            <input className={styles.input}
+              type="password"
+              value={passwordHash}
+              onChange={(e) => setPasswordHash(e.target.value)}
+            />
+          </div>
+
+          {erro && <p className={styles.erro}>{erro}</p>}
+          {sucesso && <p className={styles.sucesso}>{sucesso}</p>}
+
+
+          <button className={styles.botao} type="submit">Logar</button>
+          <p className={styles.link}>
+            Não tem conta? <Link to="/cadastro">Criar</Link>
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}
