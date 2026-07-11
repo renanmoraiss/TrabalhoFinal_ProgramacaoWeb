@@ -53,6 +53,38 @@ As principais funcionalidades da aplicação são:
 
 ![Tela de Cadastro](./screenshots/TelaCadastro.png)
 
+### Tela de Início
+
+![Tela de Início](./screenshots/TelaInicio.png)
+
+### Tela de Catálogo
+
+![Tela de Catálogo](./screenshots/TelaCatalogo.png)
+
+### Tela de Abrir Pacote
+
+![Tela de Abrir Pacote](./screenshots/TelaAbrirPacote.png)
+
+### Tela de Pacote Aberto
+
+![Tela de Pacote Aberto](./screenshots/TelaPacoteAberto.png)
+
+### Tela de Inventário
+
+![Tela de Inventário](./screenshots/TelaInventario.png)
+
+### Tela de Álbum
+
+![Tela de Álbum](./screenshots/TelaAlbum.png)
+
+### Tela de Coleções
+
+![Tela de Coleções](./screenshots/TelaColecoes.png)
+
+### Tela de Coleção Aberta
+
+![Tela de Coleção Aberta](./screenshots/TelaColecaoAberta.png)
+
 ## Integrantes
 
 | Nome | GitHub |
