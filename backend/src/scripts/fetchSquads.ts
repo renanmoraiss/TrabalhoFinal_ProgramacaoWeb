@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { fetchTeams, fetchSquad } from "../Services/apiFootball.service";
+import { fetchTeams, fetchSquad } from "../services/apiFootball.service";
 
 dotenv.config();
 

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { OpenPackService } from "../../Services/Pack/OpenPackService";
+import { OpenPackService } from "../../services/Pack/OpenPackService";
 
 class OpenPackController {
   async handle(req: Request, res: Response) {
