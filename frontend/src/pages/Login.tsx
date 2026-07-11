@@ -40,7 +40,7 @@ export function Login() {
     <div className={styles.pagina}>
       <header className={styles.header}>
         <img src="../../public/Logo.jpg" alt="Logo do projeto" className={styles.logo} />
-        <p className={styles.tituloProjeto}>Copa album - O sonho do Hexa</p>
+        <p className={styles.tituloProjeto}>Copa Álbum - O Sonho do Hexa</p>
       </header>
 
       <div className={styles.container}>
