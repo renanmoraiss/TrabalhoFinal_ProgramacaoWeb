@@ -34,7 +34,7 @@ router.post("/collections/:id/stickers", isAuthenticated, new AddStickerToCollec
 router.delete("/collections/:id/stickers/:userStickerId", isAuthenticated, new RemoveStickerFromCollectionController().handle);
 router.get("/stickers/me", isAuthenticated, new ListUserStickersController().handle);
 router.get("/album/brasil", isAuthenticated, new GetBrasilAlbumController().handle);
-router.get("/players", new ListPlayersController().handle);
+router.get("/players", isAuthenticated, new ListPlayersController().handle);
 router.post("/packs/open", isAuthenticated, new OpenPackController().handle);
 
 export {router};
